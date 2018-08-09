@@ -26,9 +26,11 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
           val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", query)
           val json = Json.parse(request.asBytes.body)
           ((json \ "data").validate[JsArray].asOpt map {
-            case JsArray(seq) => seq.headOption.flatMap(_.validate[MagicCard].asOpt)
+            case JsArray(seq) =>
+              val cardSeq =seq.flatMap(_.validate[MagicCard].asOpt)
+              cardSeq.find(_.name.toLowerCase == query.trim.toLowerCase).orElse(cardSeq.headOption)
             case _ => None
-          }).getOrElse(None).map(card => ChatMessage(user, channel, card.toString))
+          }).getOrElse(None).map(card => ChatMessage(user, channel, card.toString)).orElse(Some(ChatMessage(user, channel, "You done goofed.")))
         })
         case _ => Future(None)
       }
