@@ -13,7 +13,7 @@ case class ServerMessage(code: Int, body: String) extends IrcMessage
 case class ChatMessage(user: String, channel: String, message: String) extends IrcMessage {
   override def serialize = {
     val msgTemplate = "PRIVMSG " + channel + " :" + _
-    val length = 256 - msgTemplate("").length // 512 is max length, but lets be safe
+    val length = 384 - msgTemplate("").length // 512 is max length, but lets be safe
     message.split(' ').foldLeft(List[String]()){ (messages, word) =>
       if ( messages.headOption.exists(_.length >= length) ) {
         word :: messages
