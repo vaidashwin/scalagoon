@@ -4,7 +4,7 @@ import java.net.URLEncoder
 
 import app.messaging.{ChatMessage, IrcMessage}
 import modules.jsonserde.MagicCard
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsArray, Json}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -47,7 +47,13 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
       val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", query)
       val json = Json.parse(request.asBytes.body)
       ((json \ "data").validate[JsArray].asOpt map {
-        case JsArray(seq) => seq.flatMap(_.validate[MagicCard].asOpt).toList
+        case JsArray(seq) =>
+          seq.flatMap (_.validate[MagicCard] match {
+            case s: JsSuccess[MagicCard] => s.asOpt
+            case f: JsError =>
+              println(f.errors)
+              None
+          }).toList
         case _ => Nil
       }).getOrElse(Nil)
     })
