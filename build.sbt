@@ -16,7 +16,8 @@ lazy val scalagoon = (project in file("."))
     name := "ScalaGoon",
     libraryDependencies ++= Seq(
       "org.scalaj" %% "scalaj-http" % "2.4.1",
-      "com.typesafe.play" %% "play-json" % "2.6.7"
+      "com.typesafe.play" %% "play-json" % "2.6.7",
+      "org.scala-lang.modules" %% "scala-xml" % "1.1.0"
     ),
     scalaSource in Compile <<= baseDirectory(_ / "src"),
     mainClass in (Compile, run) := Some("app.Robot"),
