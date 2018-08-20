@@ -45,7 +45,13 @@ object Robot extends App {
       new MerriamWebsterModule(respond) ::
       Nil
 
-    val moduleFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = modules.map(_.func).reduce(_ orElse _)
+    val helpFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = {
+      case ChatMessage(user, ch, s) if s == s"hi $nick" =>
+        val moduleMessage = modules.flatMap(_.helpBlurb).mkString("; ")
+        Some(ChatMessage(nick, ch, s"hi i'm $nick, you can say i'm broken or ask me at https://github.com/vaidashwin/scalagoon. my modules are: $moduleMessage"))
+    }
+
+    val moduleFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = helpFunc orElse modules.map(_.func).reduce(_ orElse _)
 
 
     var line = ""

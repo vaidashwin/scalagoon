@@ -19,6 +19,7 @@ import modules.jsonserde.MagicCard._
 class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback) {
   val singleCard = "mtg (.*)$".r
   val mtgAll = "mtgall(\\d*) (.*)$".r
+  override val helpBlurb = Some("scryfall (mtg <query>, mtgall <query>, mtgall<number> <query>")
 
   override val asyncBehavior: PartialFunction[IrcMessage, Future[Option[IrcMessage]]] = {
     case ChatMessage(user, channel, singleCard(query: String))  =>

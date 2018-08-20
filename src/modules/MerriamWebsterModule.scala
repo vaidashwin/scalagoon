@@ -16,6 +16,7 @@ case class DictionaryEntry(partOfSpeech: String, definition: String) {
   * Created by Ashwin on 8/16/18.
   */
 class MerriamWebsterModule(callback: IrcMessage => Unit) extends AsyncModule(callback) {
+  override val helpBlurb = Some("merriam-webster (define <word>, more for more results)")
   val dictKey = "a9fad686-8bd7-4754-a4a6-839c68e94cbf"
   val thesKey = "a71ed6d4-9353-4fc8-8d14-f85aff56ebab"
   var results: List[DictionaryEntry] = Nil

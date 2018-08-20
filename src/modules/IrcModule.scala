@@ -11,6 +11,7 @@ import scala.util.matching.Regex
   * Created by Ashwin on 8/5/18.
   */
 trait IrcModule {
+  def helpBlurb: Option[String] = None
   def func: PartialFunction[IrcMessage, Option[IrcMessage]]
 
 }
