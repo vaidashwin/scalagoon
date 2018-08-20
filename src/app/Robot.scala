@@ -42,6 +42,7 @@ object Robot extends App {
       new JoinModule(channel) ::
       new GonnaGiveItToYaModule ::
       new ScryfallModule(respond) ::
+      new MerriamWebsterModule(respond) ::
       Nil
 
     val moduleFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = modules.map(_.func).reduce(_ orElse _)

@@ -23,7 +23,10 @@ case class ChatMessage(user: String, channel: String, message: String) extends I
           case _ => word :: Nil
         }
       }
-    }.reverse.map(msgTemplate).reduce(_ + "\r\n" + _)
+    }.reverse.map(msgTemplate) match {
+      case msg @ too :: long :: words :: _ :: _ => (too :: long :: words :: " (truncated)" :: Nil).reduce(_ + "\r\n" + _)
+      case msg => msg.reduce(_ + "\r\n" + _)
+    }
   }
 }
 
