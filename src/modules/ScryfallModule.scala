@@ -44,7 +44,13 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
   // return a future in case the query is slow. bot shouldn't hang on this.
   def getCardsForQuery(query: String): Future[List[MagicCard]] = {
     Future({
-      val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", query.replaceAll("\\b(\\w+)\\b", "\"$1\""))
+      val oneWordRegex = "(\\w+)".r
+      val cleanedQuery = query match {
+        case oneWordRegex(_) => "\"" + query + "\""
+        case _ => query
+      }
+      println(s"INFO: $query") // TODO MAKE LOGGR
+      val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery)
       val json = Json.parse(request.asBytes.body)
       ((json \ "data").validate[JsArray].asOpt map {
         case JsArray(seq) =>
