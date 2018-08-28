@@ -14,7 +14,7 @@ case class ChatMessage(user: String, channel: String, message: String) extends I
   override def serialize = {
     val msgTemplate = "PRIVMSG " + channel + " :" + _
     val length = 384 - msgTemplate("").length // 512 is max length, but lets be safe
-    message.split(' ').foldLeft(List[String]()){ (messages, word) =>
+    new String((message.split(' ').foldLeft(List[String]()){ (messages, word) =>
       if ( messages.headOption.exists(_.length >= length) ) {
         word :: messages
       } else {
@@ -26,7 +26,7 @@ case class ChatMessage(user: String, channel: String, message: String) extends I
     }.reverse.map(msgTemplate) match {
       case msg @ too :: long :: _ :: _ => (too :: long :: " (truncated)" :: Nil).reduce(_ + "\r\n" + _)
       case msg => msg.reduce(_ + "\r\n" + _)
-    }
+    }).getBytes("UTF8"), "UTF8")
   }
 }
 
