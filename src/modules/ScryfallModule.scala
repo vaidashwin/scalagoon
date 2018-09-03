@@ -13,6 +13,8 @@ import scalaj.http.{Http, HttpRequest}
 
 import modules.jsonserde.MagicCard._
 
+import scalabotlib.db._
+
 /**
   * Created by Ashwin on 8/6/18.
   */
@@ -51,8 +53,16 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
         case _ => query
       }
       println(s"INFO: $query") // TODO MAKE LOGGR
-      val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery)
-      val json = Json.parse(request.asBytes.body)
+      val rtry = Option(getCacheValueTimeout("cards",query))
+      val resp : String = rtry match {
+        case Some(i : String) => i
+        case None => { var rr = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery).asString.body
+                       cacheValue("cards",query,"rr")
+                      println("Cache Hit")
+                       rr}
+      }
+      //val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery)
+      val json = Json.parse(resp)
       ((json \ "data").validate[JsArray].asOpt map {
         case JsArray(seq) =>
           seq.flatMap (_.validate[MagicCard] match {
