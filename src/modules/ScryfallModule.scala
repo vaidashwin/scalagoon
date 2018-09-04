@@ -58,7 +58,6 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
         case Some(i : String) => i
         case None => cacheValue("cards",query,Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery).asString.body)
       }
-      //val request = Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery)
       val json = Json.parse(resp)
       ((json \ "data").validate[JsArray].asOpt map {
         case JsArray(seq) =>
