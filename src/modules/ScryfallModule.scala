@@ -31,7 +31,7 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
       val cardFuture = getCardsForQuery(query)
       val countInt = Try(count.toInt).getOrElse(10)
       cardFuture.map { cards =>
-        Some(ChatMessage(user, channel, s"${cards.length} found: ${cards.take(countInt).map(_.name).mkString(sep = ", ")} ${if( cards.length > countInt ) {
+        Some(ChatMessage(user, channel, s"${cards.length} found: ${cards.take(countInt).map(_.name).mkString(sep = "; ")} ${if( cards.length > countInt ) {
                 s"(${cards.length - countInt} more found, use mtgall<number> to get more)"
               } else {
                 ""
