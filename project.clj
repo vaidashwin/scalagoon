@@ -20,4 +20,5 @@
   :source-paths ["src/clojure"]
   :scala-source-path "src"
   :prep-tasks ["compile" "scalac" ]
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :jvm-opts ["-Dfile.encoding=UTF8"])
