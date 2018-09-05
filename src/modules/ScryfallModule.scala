@@ -56,7 +56,7 @@ class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback)
       val rtry = Option(getCacheValueTimeout("cards",query))
       val resp : String = rtry match {
         case Some(i : String) => i
-        case None => cacheValue("cards",query,Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery).asString.body)
+        case None => cacheValue("cards", query, Http(url = "https://api.scryfall.com/cards/search").param(key = "q", cleanedQuery).asString.body)
       }
       val json = Json.parse(resp)
       ((json \ "data").validate[JsArray].asOpt map {

@@ -10,9 +10,17 @@
 
 (gen-class
   :name scalabotlib.db
-  :methods [#^{:static true} [cacheValue [String String String] String] #^{:static true} [getCacheValueTimeout [String String] String]])
+  :methods [
+            #^{:static true} [cacheValue [String String String] String]
+            #^{:static true} [getCacheValueTimeout [String String] String]
+            #^{:static true} [initStore [] void]])
 
-(def store (delay (<!! (new-fs-store "diosdb.tmp"))))
+;(def store (delay (<!! (new-fs-store "diosdb.tmp"))))
+
+(def store (atom ()))
+
+(defn -initStore []
+  (reset! store (<!! (new-fs-store "diosdb.tmp"))))
 
 (defn -cacheValue [cache key value]
   (let [kk (join "" [cache key])]
