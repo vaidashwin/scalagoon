@@ -20,15 +20,22 @@ import scalabotlib.db._
   */
 class ScryfallModule(callback: IrcMessage => Unit) extends AsyncModule(callback) {
   val singleCard = "mtg (.*)$".r
+  val cardPrice = "mtgprice (.*)$".r
   val mtgAll = "mtgall(\\d*) (.*)$".r
   override val helpBlurb = Some("scryfall (mtg <query>, mtgall <query>, mtgall<number> <query>")
-
+  def targetCard(cardFuture: Future[List[MagicCard]], callback : MagicCard => ChatMessage, user : String, channel : String, query : String) = {
+    cardFuture.map { cards =>
+      cards.find(_.name.toLowerCase == query.trim.toLowerCase).orElse(cards.headOption).map(callback).orElse(Some(ChatMessage(user, channel, "You done goofed.")))
+    }
+  }
   override val asyncBehavior: PartialFunction[IrcMessage, Future[Option[IrcMessage]]] = {
+
     case ChatMessage(user, channel, singleCard(query: String))  =>
-      val cardFuture = getCardsForQuery(query)
-      cardFuture.map { cards =>
-        cards.find(_.name.toLowerCase == query.trim.toLowerCase).orElse(cards.headOption).map(card => ChatMessage(user, channel, card.toString)).orElse(Some(ChatMessage(user, channel, "You done goofed.")))
-      }
+      targetCard(getCardsForQuery(query), x => ChatMessage(user, channel, x.toString), user, channel, query)
+
+    case ChatMessage(user, channel, cardPrice(query: String))  =>
+      targetCard(getCardsForQuery(query), x => ChatMessage(user, channel, x.toStringPrice), user, channel, query)
+
     case ChatMessage(user, channel, mtgAll(count: String, query: String)) =>
       val cardFuture = getCardsForQuery(query)
       val countInt = Try(count.toInt).getOrElse(10)

@@ -15,6 +15,10 @@
     (reset! ini (read-ini "bot.ini"))))
 
 (defn -getValue [val]
+  "
+  Get a config value
+  @param key Key to get from file
+  "
   (get (getConfig) val))
 
 

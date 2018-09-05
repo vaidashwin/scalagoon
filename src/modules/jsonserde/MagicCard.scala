@@ -40,6 +40,11 @@ class MagicCard( val name: String,
         s"$name || $faceString || $urival ||$prices"
     }, " ")
   }
+  def toStringPrice: String = {
+    val price = usd.map(u => s" $u USD").getOrElse("")
+
+    s"Price for $name: $price"
+  }
 }
 
 object MagicCard {
