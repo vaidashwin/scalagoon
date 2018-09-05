@@ -14,10 +14,11 @@
                  [clj-time "0.14.4"]]
   :repositories [["Typesafe Repository" "https://repo.typesafe.com/typesafe/releases/"]]
   :main ^:skip-aot app.Robot
-  :aot [scalabotlib.db]
+  :aot [scalabotlib.db scalabotlib.ircmodule scalabotlib.testmodule]
   :target-path "target/%s"
   :source-paths ["src/clojure"]
   :scala-source-path "src"
   :prep-tasks ["compile" "scalac" ]
   :profiles {
-             :uberjar {:aot :all}})
+             :uberjar {:aot :all}
+             })

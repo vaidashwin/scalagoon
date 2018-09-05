@@ -9,6 +9,8 @@ import app.messaging.{ChatMessage, IrcMessage}
 import modules._
 import org.w3c.dom.NodeList
 
+import scalabotlib.testmodule.TestModuleClj
+
 /**
   * Created by Ashwin on 3/16/17.
   */
@@ -18,8 +20,8 @@ object Robot extends App {
   val xpathFactory = XPathFactory.newInstance()
 
   override def main(args: Array[String]): Unit = {
-    val nick, login = "gangsinesjr"
-    val channel = "#mtgoon"
+    val nick, login = "tenjouthief"
+    val channel = "#mtgoontest"
     val endLine = "\r\n"
 
     val serverUrl = "irc.synirc.net"
@@ -43,6 +45,7 @@ object Robot extends App {
       new GonnaGiveItToYaModule ::
       new ScryfallModule(respond) ::
       new MerriamWebsterModule(respond) ::
+      new ExternModule(new TestModuleClj) ::
       Nil
 
     val helpFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = {
