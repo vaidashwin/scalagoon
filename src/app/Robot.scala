@@ -9,6 +9,8 @@ import app.messaging.{ChatMessage, IrcMessage}
 import modules._
 import org.w3c.dom.NodeList
 
+import scalabotlib.testmodule.TestModuleClj
+
 /**
   * Created by Ashwin on 3/16/17.
   */
@@ -19,7 +21,7 @@ object Robot extends App {
 
   override def main(args: Array[String]): Unit = {
     val nick, login = "gangsinesjr"
-    val channel = "#mtgoon"
+    val channel = "#mtgoontest"
     val endLine = "\r\n"
 
     val serverUrl = "irc.synirc.net"
@@ -43,12 +45,14 @@ object Robot extends App {
       new GonnaGiveItToYaModule ::
       new ScryfallModule(respond) ::
       new MerriamWebsterModule(respond) ::
+//      Clojure modules are added like so:
+//      new ExternModule(new TestModuleClj) ::
       Nil
 
     val helpFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = {
       case ChatMessage(user, ch, s) if s == s"hi $nick" =>
         val moduleMessage = modules.flatMap(_.helpBlurb).mkString("; ")
-        Some(ChatMessage(nick, ch, s"hi i'm $nick, you can say i'm broken or ask me at https://github.com/vaidashwin/scalagoon. my modules are: $moduleMessage"))
+        Some(ChatMessage(nick, ch, s"hi i'm $nick, you can say i'm broken or ask me at https://github.com/vaidashwin/scalagoon/  My modules are: $moduleMessage"))
     }
 
     val moduleFunc: PartialFunction[IrcMessage, Option[IrcMessage]] = helpFunc orElse modules.map(_.func).reduce(_ orElse _)
