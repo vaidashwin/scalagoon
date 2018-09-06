@@ -26,8 +26,12 @@ class MagicCard( val name: String,
                  val tix: Option[String]
                ) {
 
+  def priceString() = {
+    usd.map(u => s" $$$u ").getOrElse("") + eur.map(e => s" €$e ").getOrElse("") + tix.map(t => s" ₸$t").getOrElse("")
+  }
+
   override def toString: String = {
-    val prices = usd.map(u => s" $u USD").getOrElse("") + eur.map(e => s" $e EUR").getOrElse("") + tix.map(t => s" $t TIX").getOrElse("")
+    val prices = priceString()
 
     val urival = uri match {
       case Some(uriv) => Http("http://tinyurl.com/api-create.php").param("url",uriv).asString.body
@@ -39,6 +43,10 @@ class MagicCard( val name: String,
         val faceString = faces.map(face => s"${face.toString}").mkString(" // ")
         s"$name || $faceString || $urival ||$prices"
     }, " ")
+  }
+  def toStringPrice: String = {
+    val price = priceString()
+    s"Price for $name: $price"
   }
 }
 
