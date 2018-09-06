@@ -1,5 +1,7 @@
 (ns scalabotlib.testmodule
-  )
+  (:require scalabotlib.ircmodule))
+
+(derive ::testmodule ::ircmodule)
 
 (gen-class
   :name scalabotlib.testmodule.TestModuleClj
