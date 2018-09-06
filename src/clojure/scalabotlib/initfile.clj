@@ -1,7 +1,7 @@
 (ns scalabotlib.initfile
   (:require
-             [clojure-ini.core :refer [read-ini]]
-             ))
+    [clojure-ini.core :refer [read-ini]]
+    ))
 
 (gen-class
   :name scalabotlib.initfile
@@ -12,7 +12,8 @@
 (defn getConfig []
   (if @ini
     @ini
-    (reset! ini (read-ini "bot.ini"))))
+    (reset! ini (try (read-ini "bot.ini")
+                     (catch Exception e {})))))
 
 (defn -getValue [val]
   "
@@ -20,5 +21,3 @@
   @param key Key to get from file
   "
   (get (getConfig) val))
-
-
